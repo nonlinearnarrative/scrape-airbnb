@@ -4,32 +4,6 @@ const getProxy = require('./proxy');
 const Curl = require( 'node-libcurl' ).Curl;
 var randomUA = require('random-fake-useragent');
 
-const testRedirect = (url, proxy) => {
-  return new Promise((resolve, reject) => {
-    var curl = new Curl();
-    curl.setOpt('TIMEOUT', 5);
-    curl.setOpt('URL', url.trim());
-    curl.setOpt('FOLLOWLOCATION', false);
-    curl.setOpt(
-      'PROXY',
-      `${/\:443/.test(proxy) ? 'https' : 'http'}://${proxy}`
-    );
-    curl.setOpt(
-      'WRITEFUNCTION',
-      () => {
-        resolve(true);
-        return 0;
-      }
-    );
-    curl.on('error', err => {
-      console.log('redirected');
-      resolve(false);
-      curl.close();
-    });
-    curl.perform();
-  });
-}
-
 const curlGet = (url, proxy) => {
   return new Promise((resolve, reject) => {
     var curl = new Curl();
@@ -87,8 +61,6 @@ module.exports = {
     if (exists) return false;
 
     const proxy = await getProxy();
-    const redirects = await testRedirect(url, proxy);
-    if (redirects) return false;
 
     const browser = await puppeteer.launch({
       headless: true,
