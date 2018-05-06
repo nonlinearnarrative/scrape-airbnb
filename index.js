@@ -78,10 +78,14 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
 
   const { ids } = data;
 
+  let { ids } = data;
   // Filter out existing ids:
   ids = await Promise.filter(
     ids,
-    id => !fs.exists(`${__dirname}/${id}.json`),
+    async id => {
+      const exists = await fs.exists(`${__dirname}/${id}.json`);
+      return !exists;
+    },
     { concurrency: 100 }
   );
   while (ids.length > 0) {
