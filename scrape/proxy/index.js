@@ -66,7 +66,6 @@ const findProxies = async() => {
   } catch (err) {
     throw err;
   }
-  console.log(allProxies.length);
 };
 
 let findingP;

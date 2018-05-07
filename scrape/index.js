@@ -73,7 +73,6 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
       { concurrency: 30 }
     );
     urls = urls.filter(url => !data.urls.includes(shortHash(url)))
-    console.log(`${urls.length} left`);
     count = 0;
     errorCount = 0;
   }
