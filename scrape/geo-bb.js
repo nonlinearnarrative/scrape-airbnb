@@ -5,7 +5,7 @@ const getBoundingBox = () => {
   return new Promise((resolve, reject) => {
     const status = document.querySelector('#status').innerText;
     let matches = status.match(
-      /North Latitude: ([0-9.]+) South Latitude: ([0-9.]+) East Longitude: ([0-9.]+) West Longitude: ([0-9.]+)/
+      /North Latitude: ([\-0-9.]+) South Latitude: ([\-0-9.]+) East Longitude: ([\-0-9.]+) West Longitude: ([\-0-9.]+)/
     );
     const [, neLat, swLat, neLon, swLon] = matches.map(Number);
     resolve(
