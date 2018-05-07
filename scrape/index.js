@@ -37,8 +37,6 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
     data = await fs.readJson(uri);
   }
 
-  // TODO: coordinates hard coded to Amsterdam, use something like
-  // http://www.mapdevelopers.com/geocode_bounding_box.php
   const location = getLocation();
   if (!location) throw 'Please provide location name as an argument';
   console.log(`Looking up geo bounding box for ${location}`);
