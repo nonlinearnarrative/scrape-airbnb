@@ -1,7 +1,10 @@
 const slug = require('slug');
 const path = require('path');
 
-const getLocation = () => process.argv[2];
+const getLocation = () => {
+  const [,, ...args] = process.argv;
+  return args.join(' ')
+};
 
 const getUri = (file) => {
   const location = slug(getLocation());
