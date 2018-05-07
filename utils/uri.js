@@ -1,9 +1,11 @@
 const slug = require('slug');
 const path = require('path');
 
+const getLocation = () => process.argv[2];
+
 const getUri = (file) => {
-  const name = process.argv.splice(2, process.argv.length - 1).join(' ');
-  const uri = path.join(__dirname, `../output/${slug(name)}`);
+  const location = slug(getLocation());
+  const uri = path.join(__dirname, `../output/${location}`);
   return file
     ? `${uri}/${file}`
     : uri;
@@ -12,5 +14,5 @@ const getUri = (file) => {
 const getListingFile = id => getUri(`listings/${id}.json`);
 
 module.exports = {
-  getUri, getListingFile,
+  getUri, getListingFile, getLocation
 };

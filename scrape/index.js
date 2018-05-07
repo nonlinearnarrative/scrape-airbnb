@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const Promise = require('bluebird');
 const fs = require('fs-extra');
 const shortHash = require('short-hash');
-const { getUri, getListingFile } = require('../utils/uri');
+const { getUri, getListingFile, getLocation } = require('../utils/uri');
 
 const scrapers = require('./scrapers');
 const getGeoBB = require('./geo-bb');
@@ -39,7 +39,7 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
 
   // TODO: coordinates hard coded to Amsterdam, use something like
   // http://www.mapdevelopers.com/geocode_bounding_box.php
-  const location = process.argv[2];
+  const location = getLocation();
   if (!location) throw 'Please provide location name as an argument';
   console.log(`Looking up geo bounding box for ${location}`);
   const bb = await getGeoBB(location);
