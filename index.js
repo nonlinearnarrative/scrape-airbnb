@@ -76,8 +76,6 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
   }
   fs.outputJsonSync(uri, data);
 
-  const { ids } = data;
-
   let { ids } = data;
   // Filter out existing ids:
   ids = await Promise.filter(
