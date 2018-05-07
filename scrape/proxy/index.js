@@ -69,14 +69,15 @@ const findProxies = async() => {
   console.log(allProxies.length);
 };
 
-let starting = findProxies();
-
-setInterval(() => {
-  starting = findProxies();
-}, 60 * 1000 * 30);
+let findingP;
+let findingTime;
 
 module.exports = async () => {
-  await starting;
+  if (!findingP || (Date.now() - startingTime > 60 * 1000 * 15)) {
+    findingP = findProxies();
+    findingTime = Date.now();
+  }
+  await findingP;
   return allProxies[index++ % allProxies.length];
 };
 
