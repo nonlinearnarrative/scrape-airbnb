@@ -35,10 +35,10 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
   // TODO: coordinates hard coded to Amsterdam, use something like
   // http://www.mapdevelopers.com/geocode_bounding_box.php
   let urls = constructUrls({
-    neLat: 52.278139,
-    swLat: 52.431157,
-    neLon: 4.728856,
-    swLon: 5.068390
+    neLat: 52.014772,
+    swLat: 52.128537,
+    neLon: 4.196710,
+    swLon: 4.423026
   });
   const totalCount = urls.length;
 
