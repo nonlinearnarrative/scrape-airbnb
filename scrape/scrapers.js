@@ -1,8 +1,10 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs-extra');
-const getProxy = require('./proxy');
 const Curl = require( 'node-libcurl' ).Curl;
 var randomUA = require('random-fake-useragent');
+
+const getProxy = require('./proxy');
+const { getUri, getListingFile } = require('../utils/uri');
 
 const curlGet = (url, proxy) => {
   return new Promise((resolve, reject) => {
@@ -54,7 +56,7 @@ const blockResourceRequests = (request) => {
 
 module.exports = {
   getRoomData: async(id) => {
-    const outputFile = `${__dirname}/../output/${process.argv[2]}/${id}.json`;
+    const outputFile = getListingFile(id);
     const url = `https://www.airbnb.com/rooms/${id}`;
 
     const exists = await fs.exists(outputFile);
@@ -91,7 +93,7 @@ module.exports = {
       }
       const listingData = data.bootstrapData.reduxData.homePDP.listingInfo.listing;
       await fs.outputJson(outputFile, listingData);
-      console.log(`Outputted ./output/${process.argv[2]}/${id}.json`);
+      console.log(`Outputted ${outputFile}`);
       await browser.close();
       return false;
     } catch (e) {

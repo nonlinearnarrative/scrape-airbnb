@@ -1,25 +1,26 @@
-const fs = require('fs-extra');
+var fs = require('fs-extra');
+var listings = require('../utils/listings');
+var getUri = require('../utils/uri');
 
-const byHostId = {};
+var byHostId = {};
 
 (async() => {
-  var files = await fs.readdir('./output-old');
-  files = files.filter(file => /[0-9]+\.json/.test(file));
-  for (var i = 0; i < files.length; i++) {
-    var file = files[i];
-    var listing = await fs.readJson(`./output-old/${file}`);
-    if (!byHostId[listing.primary_host.id]) {
-      byHostId[listing.primary_host.id] = [];
+  await listings.forEach(listing => {
+    var id = listing.primary_host.id;
+    if (!byHostId[id]) {
+      byHostId[id] = [];
     }
-    byHostId[listing.primary_host.id].push(listing.id);
-  }
-
-  const entries = Object.entries(byHostId);
-  entries.sort(function (a, b) {
-    return b[1].length - a[1].length;
+    byHostId[id].push(listing.id);
   });
 
-  // At least 10 properties:
-  entries.filter(entry => entry[1].length > 10);
-  await fs.outputJson('./output-old/properties-by-host.json');
+  var entries = Object.entries(byHostId);
+
+  // Sort by amount of properties:
+  entries.sort((a, b) => b[1].length - a[1].length);
+
+  // At least 3 properties:
+  entries = entries.filter(entry => entry[1].length > 3);
+  var output = getUri('properties-by-host.json');
+  console.log(`Outputted ${entries.length} hosts to ${output}`);
+  await fs.outputJson(output);
 })();

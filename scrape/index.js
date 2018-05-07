@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const Promise = require('bluebird');
 const fs = require('fs-extra');
 const shortHash = require('short-hash');
+const { getUri, getListingFile } = require('../utils/uri');
 
 const scrapers = require('./scrapers');
 const getGeoBB = require('./geo-bb');
@@ -27,7 +28,7 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
 }
 
 (async () => {
-  const uri = `${__dirname}/../output/${process.argv[2]}/ids-to-scrape.json`;
+  const uri = getUri('ids-to-scrape.json');
   let data = {
     ids: [],
     urls: [],
@@ -85,7 +86,7 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
   ids = await Promise.filter(
     ids,
     async id => {
-      const exists = await fs.exists(`${__dirname}/output/${process.argv[2]}/${id}.json`);
+      const exists = await fs.exists(getListingFile(id));
       return !exists;
     },
     { concurrency: 100 }
