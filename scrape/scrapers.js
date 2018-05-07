@@ -54,7 +54,7 @@ const blockResourceRequests = (request) => {
 
 module.exports = {
   getRoomData: async(id) => {
-    const outputFile = `./output/${id}.json`;
+    const outputFile = `${__dirname}/../output/${process.argv[2]}/${id}.json`;
     const url = `https://www.airbnb.com/rooms/${id}`;
 
     const exists = await fs.exists(outputFile);
@@ -91,7 +91,7 @@ module.exports = {
       }
       const listingData = data.bootstrapData.reduxData.homePDP.listingInfo.listing;
       await fs.outputJson(outputFile, listingData);
-      console.log(`Outputted ./output/${id}.json`);
+      console.log(`Outputted ./output/${process.argv[2]}/${id}.json`);
       await browser.close();
       return false;
     } catch (e) {
