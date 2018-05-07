@@ -73,7 +73,10 @@ let findingP;
 let findingTime;
 
 module.exports = async () => {
-  if (!findingP || (Date.now() - startingTime > 60 * 1000 * 15)) {
+  if (
+    !findingP ||
+    (Date.now() - findingTime > (60 * 1000 * 15))
+  ) {
     findingP = findProxies();
     findingTime = Date.now();
   }
