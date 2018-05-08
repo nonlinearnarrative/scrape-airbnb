@@ -1,36 +1,8 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs-extra');
-const Curl = require( 'node-libcurl' ).Curl;
-var randomUA = require('random-fake-useragent');
-
+const request = require('../utils/request');
 const getProxy = require('./proxy');
 const { getUri, getListingFile } = require('../utils/uri');
-
-const curlGet = (url, proxy) => {
-  return new Promise((resolve, reject) => {
-    var curl = new Curl();
-    const settings = {
-      TIMEOUT: 20,
-      URL: url,
-      FOLLOWLOCATION: false,
-      PROXY: `${/\:443/.test(proxy) ? 'https' : 'http'}://${proxy}`,
-      USERAGENT: randomUA.getRandom(),
-    };
-    Object.entries(settings)
-      .forEach(
-        ([key, value]) => curl.setOpt(key, value)
-      );
-    curl.on('end', (statusCode, body, headers) => {
-      (statusCode === 200 ? resolve : reject)(body);
-      curl.close();
-    });
-    curl.on('error', () => {
-      reject();
-      curl.close();
-    });
-    curl.perform();
-  });
-}
 
 const getJson = () => {
   return new Promise((resolve, reject) => {
@@ -102,15 +74,17 @@ module.exports = {
     }
   },
   getRoomIds: async (url) => {
-    let result;
     try {
       const proxy = await getProxy();
-      result = await curlGet(url, proxy);
+      const result = await request(url);
       return JSON.parse(result)
         .explore_tabs[0]
         .home_tab_metadata
         .remarketing_ids;
     } catch (e) {
+      if (!/not found|connection error/.test(e)) {
+        console.log(e);
+      }
       return 'error';
     }
   }
