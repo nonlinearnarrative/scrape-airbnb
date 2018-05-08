@@ -1,4 +1,5 @@
 var fs = require('fs-extra');
+var path = require('path');
 var Promise = require('bluebird');
 var _ = require('underscore');
 var { getUri, getListingFile } = require('./uri');
@@ -8,15 +9,16 @@ if (!process.argv[2]) {
 }
 
 var listFiles = async() => {
-  var files = await fs.readdir(getUri());
+  var dir = path.join(getUri(), 'listings');
+  var files = await fs.readdir(dir);
   return files.filter(file => /[0-9]+\.json/.test(file));
 };
 
 var forEach = async callback => {
   var files = await listFiles();
   for (var i = 0; i < files.length; i++) {
-    var file = files[i];
-    var listing = await fs.readJson(getUri(file));
+    var file = path.join(getUri(), 'listings', files[i]);
+    var listing = await fs.readJson(file);
     await callback(listing);
   }
 }
@@ -28,6 +30,8 @@ var all = async() => {
   })
   return listings;
 }
+
+
 
 var getById = async id => {
   var uri = getListingFile(id);
