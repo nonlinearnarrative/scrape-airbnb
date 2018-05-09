@@ -14,6 +14,7 @@
     "random-fake-useragent": "^0.1.0",
     "short-hash": "^1.0.0",
     "slug": "^0.9.1",
-    "underscore": "^1.9.0"
+    "underscore": "^1.9.0",
+    "download-to-file": "^2.1.0"
   }
 }

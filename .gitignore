@@ -5,3 +5,4 @@ dist
 .module-cache
 *.log*
 package-lock.json
+photos
