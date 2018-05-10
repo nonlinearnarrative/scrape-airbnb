@@ -24,8 +24,9 @@ var forEach = async callback => {
       async (photo, index) => {
         const file = getUri(`object_recognition/${listing.id}/${index}.json`);
         var exists = await fs.exists(file);
-        if (!exists) return console.log(file);
-        photo.tags = await fs.readJson(file);
+        photo.tags = exists
+          ? await fs.readJson(file)
+          : [];
       }
     )
     await callback(listing);
