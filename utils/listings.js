@@ -19,6 +19,15 @@ var forEach = async callback => {
   for (var i = 0; i < files.length; i++) {
     var file = path.join(getUri(), 'listings', files[i]);
     var listing = await fs.readJson(file);
+    await Promise.each(
+      listing.photos,
+      async (photo, index) => {
+        const file = getUri(`object_recognition/${listing.id}/${index}.json`);
+        var exists = await fs.exists(file);
+        if (!exists) return console.log(file);
+        photo.tags = await fs.readJson(file);
+      }
+    )
     await callback(listing);
   }
 }
