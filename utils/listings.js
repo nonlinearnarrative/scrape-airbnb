@@ -14,8 +14,20 @@ var listFiles = async() => {
   return files.filter(file => /[0-9]+\.json/.test(file));
 };
 
-var forEach = async callback => {
+var forEach = async (callback, concurrency) => {
   var files = await listFiles();
+  if (concurrency) {
+    return Promise.map(
+      files,
+      async file => {
+        var listing = await fs.readJson(
+          path.join(getUri(), 'listings', file)
+        );
+        await callback(listing);  
+      },
+      { concurrency: 10 }
+    )
+  }
   for (var i = 0; i < files.length; i++) {
     var file = path.join(getUri(), 'listings', files[i]);
     var listing = await fs.readJson(file);
@@ -40,8 +52,6 @@ var all = async() => {
   })
   return listings;
 }
-
-
 
 var getById = async id => {
   var uri = getListingFile(id);

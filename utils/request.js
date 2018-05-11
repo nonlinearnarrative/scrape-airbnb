@@ -1,7 +1,10 @@
-const Curl = require( 'node-libcurl' ).Curl;
+const { Curl, Easy } = require('node-libcurl');
 const randomUA = require('random-fake-useragent');
+const path = require('path');
+const fs = require('fs-extra');
+const request = require('request');
 
-module.exports = (url, proxy) => {
+const get = (url, proxy) => {
   return new Promise((resolve, reject) => {
     var curl = new Curl();
     const settings = {
@@ -35,3 +38,20 @@ module.exports = (url, proxy) => {
     curl.perform();
   });
 }
+
+const download = (url, to) => {
+  return new Promise(async (resolve, reject) => {
+    request({uri: url})
+      .on('error', e => {
+        console.log(e);
+        resolve();
+      })
+      .pipe(fs.createWriteStream(to))
+      .on('close', resolve);
+  });
+};
+
+module.exports = {
+  get,
+  download
+};

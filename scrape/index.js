@@ -3,7 +3,7 @@ const Promise = require('bluebird');
 const fs = require('fs-extra');
 const shortHash = require('short-hash');
 const { getUri, getListingFile, getLocation } = require('../utils/uri');
-
+const listings = require('../utils/listings');
 const scrapers = require('./scrapers');
 const getGeoBB = require('./geo-bb');
 
@@ -96,5 +96,11 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
       { concurrency: 30 }
     );
   }
+  console.log('Downloading images')
+  await listings.forEach(
+    listing => scrapers.downloadImages(listing),
+    60
+  );
+
   console.log('Scrape complete');
 })();
