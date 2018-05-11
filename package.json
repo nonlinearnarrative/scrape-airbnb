@@ -5,12 +5,11 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.5.1",
-    "download-to-file": "^2.1.0",
     "fs-extra": "^6.0.0",
     "geojson": "^0.5.0",
     "node-libcurl": "^1.3.0",
-    "point-in-polygon": "^1.0.1",
     "promise-queue": "^2.2.5",
+    "point-in-polygon": "^1.0.1",
     "proxy-lists": "^1.14.1",
     "puppeteer": "^1.3.0",
     "random-fake-useragent": "^0.1.0",
