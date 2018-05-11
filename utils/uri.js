@@ -1,7 +1,14 @@
 const slug = require('slug');
 const path = require('path');
 
+let location;
+
+const setLocation = () => {
+  location = 'the world';
+}
+
 const getLocation = () => {
+  if (location) return location;
   const [,, ...args] = process.argv;
   return args.join(' ')
 };
