@@ -40,6 +40,7 @@ var forEach = async (callback, concurrency) => {
       async (photo, index) => {
         const file = getUri(`object_recognition/${listing.id}/${index}.json`);
         var exists = await fs.exists(file);
+        photo.file = getUri(`listing-photos/${listing.id}/${index}.jpg`);
         photo.tags = exists
           ? await fs.readJson(file)
           : [];
