@@ -34,7 +34,11 @@ const photosByTag = {};
           if (!photosByTag[id]) {
             photosByTag[id] = [];
           }
-          photosByTag[id].push(photoId);
+          const ratio = +(width / height).toFixed(2);
+          photosByTag[id].push([
+            photoId,
+            ratio,
+          ]);
           return {
             name: id,
             coordinates: [
@@ -42,7 +46,8 @@ const photosByTag = {};
               y / imageSize.height,
               width / imageSize.width,
               height / imageSize.height
-            ]
+            ],
+            ratio
           };
         }
       );
@@ -66,13 +71,14 @@ const photosByTag = {};
         }
       );
     }
-  });
+  }, 20);
 
   var promises = Object.entries(photosByTag)
     .map(([tagName, photoIds]) => {
       return fs.outputJson(
         getUri(`frontend/tags/${tagName}.json`),
-        photoIds
+        _.sortBy(photoIds, ([, ratio]) => ratio)
+          .map(([id]) => id)
       );
     });
   await Promise.all(promises);
