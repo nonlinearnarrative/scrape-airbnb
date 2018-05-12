@@ -3,7 +3,7 @@ const slug = require('slug');
 const listings = require('../utils/listings');
 const _ = require('underscore');
 const { getUri } = require('../utils/uri');
-
+const imageInfo = require('image-info');
 let count = 0;
 
 const photosByTag = {};
@@ -22,14 +22,28 @@ const photosByTag = {};
       const photo = filteredPhotos[i];
       const photoId = `${listingIndex}-${i}`;
 
+      const imageSize = await new Promise(accept => {
+        imageInfo(
+          getUri(`listing-photos/${listing.id}/${i}.jpg`),
+          (err, info) => accept(info)
+        )
+      });
       let tags = photo.tags.map(
-        ([ name, truthFactor, coordinates]) => {
+        ([ name, truthFactor, [x, y, width, height]]) => {
           const id = slug(name);
           if (!photosByTag[id]) {
             photosByTag[id] = [];
           }
           photosByTag[id].push(photoId);
-          return { name: id, coordinates };
+          return {
+            name: id,
+            coordinates: [
+              x / imageSize.width,
+              y / imageSize.height,
+              width / imageSize.width,
+              height / imageSize.height
+            ]
+          };
         }
       );
 
@@ -38,7 +52,7 @@ const photosByTag = {};
       // rectangles to be at the back and the smallest at the front:
       tags = _.sortBy(
         tags,
-        ({ coordinates }) => coordinates.width * coordinates.height
+        ({ coordinates }) => coordinates[2] * coordinates[3]
       ).reverse();
 
       await fs.outputJson(
