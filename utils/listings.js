@@ -17,6 +17,23 @@ var listFiles = async() => {
   return files.filter(file => /[0-9]+\.json/.test(file));
 };
 
+const loadListing = async uri => {
+  var file = path.join(getUri(), 'listings', uri);
+  var listing = await fs.readJson(file);
+  await Promise.each(
+    listing.photos,
+    async (photo, index) => {
+      const file = getUri(`object_recognition/${listing.id}/${index}.json`);
+      var exists = await fs.exists(file);
+      photo.file = getUri(`listing-photos/${listing.id}/${index}.jpg`);
+      photo.tags = exists
+        ? await fs.readJson(file)
+        : [];
+    }
+  )
+  return listing;
+}
+
 var forEach = async (callback, concurrency) => {
   var files = await listFiles();
   // files = files.filter((file, index) => index % 2 === 0);
@@ -24,28 +41,14 @@ var forEach = async (callback, concurrency) => {
     return Promise.map(
       files,
       async (file, index) => {
-        var listing = await fs.readJson(
-          path.join(getUri(), 'listings', file)
-        );
+        var listing = await loadListing(file);
         await callback(listing, index);  
       },
-      { concurrency: 10 }
+      { concurrency }
     )
   }
   for (var i = 0; i < files.length; i++) {
-    var file = path.join(getUri(), 'listings', files[i]);
-    var listing = await fs.readJson(file);
-    await Promise.each(
-      listing.photos,
-      async (photo, index) => {
-        const file = getUri(`object_recognition/${listing.id}/${index}.json`);
-        var exists = await fs.exists(file);
-        photo.file = getUri(`listing-photos/${listing.id}/${index}.jpg`);
-        photo.tags = exists
-          ? await fs.readJson(file)
-          : [];
-      }
-    )
+    const listing = loadListing(files[i])
     await callback(listing, i);
   }
 }
