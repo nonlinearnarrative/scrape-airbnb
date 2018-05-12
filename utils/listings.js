@@ -8,6 +8,9 @@ if (!process.argv[2]) {
   throw 'Please provide location name as an argument';
 }
 
+
+// window.location.hash
+
 var listFiles = async() => {
   var dir = path.join(getUri(), 'listings');
   var files = await fs.readdir(dir);
