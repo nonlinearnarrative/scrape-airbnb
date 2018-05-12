@@ -47,6 +47,7 @@ const photosByTag = {};
           src: photo.xx_large,
           name: listing.name,
           listingId: listing.id,
+          photoId,
           tags
         }
       );
