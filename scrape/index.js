@@ -70,7 +70,7 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
           data.ids.push(id);
         });
       },
-      { concurrency: 30 }
+      { concurrency: 1 }
     );
     urls = urls.filter(url => !data.urls.includes(shortHash(url)))
     count = 0;
@@ -93,7 +93,7 @@ const constructUrls = ({ neLat, neLon, swLat, swLon }) => {
     ids = await Promise.filter(
       ids,
       scrapers.getRoomData,
-      { concurrency: 30 }
+      { concurrency: 1 }
     );
   }
   console.log('Downloading images')

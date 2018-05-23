@@ -2,7 +2,6 @@ const puppeteer = require('puppeteer');
 const fs = require('fs-extra');
 const path = require('path');
 const request = require('../utils/request');
-const getProxy = require('./proxy');
 const { getUri, getListingFile } = require('../utils/uri');
 const Promise = require('bluebird');
 
@@ -35,11 +34,8 @@ const getRoomData = async id => {
   const exists = await fs.exists(outputFile);
   if (exists) return false;
 
-  const proxy = await getProxy();
-
   const browser = await puppeteer.launch({
     headless: true,
-    args: [ `--proxy-server=${proxy}` ]
   });
   const page = await browser.newPage();
   await page.setRequestInterception(true);
@@ -77,8 +73,7 @@ const getRoomData = async id => {
 
 const getRoomIds = async url => {
   try {
-    const proxy = await getProxy();
-    const result = await request.get(url, proxy);
+    const result = await request.get(url);
     return JSON.parse(result)
       .explore_tabs[0]
       .home_tab_metadata
