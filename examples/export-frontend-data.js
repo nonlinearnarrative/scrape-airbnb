@@ -8,10 +8,22 @@ let count = 0;
 
 const photosByTag = {};
 
+const shiftCoordinates = ([x, y, width, height]) => (
+  [
+    x - width / 2,
+    y - height / 2,
+    width,
+    height
+  ]
+);
+
 (async() => {
   await listings.forEach(async (listing, listingIndex) => {
+    listing.photos.forEach((photo, index) => {
+      photo.index = index;
+    })
     const filteredPhotos = listing.photos.filter(
-      photo => photo.tags.length >= 3
+      photo => photo.tags.length >= 2
     );
 
     for (var i = 0; i < filteredPhotos.length; i++) {
@@ -24,7 +36,7 @@ const photosByTag = {};
 
       const imageSize = await new Promise(accept => {
         imageInfo(
-          getUri(`listing-photos/${listing.id}/${i}.jpg`),
+          getUri(`listing-photos/${listing.id}/${photo.index}.jpg`),
           (err, info) => accept(info)
         )
       });
@@ -41,13 +53,12 @@ const photosByTag = {};
           ]);
           return {
             name: id,
-            coordinates: [
+            coordinates: shiftCoordinates([
               x / imageSize.width,
               y / imageSize.height,
               width / imageSize.width,
               height / imageSize.height
-            ],
-            ratio
+            ]),
           };
         }
       );
@@ -82,4 +93,9 @@ const photosByTag = {};
       );
     });
   await Promise.all(promises);
+
+  const values = [];
+  Object.entries(photosByTag)
+    .forEach(([, photoIds]) => values.push(...photoIds.map(([id]) => id)));
+  console.log(_.uniq(values).length);
 })();
