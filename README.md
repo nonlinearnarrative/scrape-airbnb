@@ -11,7 +11,7 @@ node scrape
 ```
 
 ## Manipulating the data
-The folder `examples` contains various examples of manipulating the data. Some of them require that you run object recognition on the scraped data first. Use our tool [`airbnb-object-recognition`](https://github.com/nonlinearnarrative/airbnb-object-recognition).
+The folder `examples` contains various examples of manipulating the data. Some of them require that you run object recognition on the scraped data first. Use our tool [`airbnb-object-recognition`](https://github.com/nonlinearnarrative/airbnb-object-recognition). To see a comprehensive overview of the data structure, see the [Model](https://github.com/nonlinearnarrative/scrape-airbnb/blob/master/Model.md).
 
 ```bash
 node examples/[example name]
